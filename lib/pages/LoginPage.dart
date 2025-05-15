@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:part2_project/pages/profile_page.dart';
 import 'package:part2_project/models/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -90,33 +91,66 @@ class _LoginPageState extends State<LoginPage> {
                               elevation: 3,
                             ),
                             onPressed: () async {
-                              String username = _usernameController.text.trim();
+                              String input = _usernameController.text.trim();
                               String password = _passwordController.text.trim();
 
-                              if (username.isEmpty || password.isEmpty) {
+                              if (input.isEmpty || password.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Please fill in all fields.')),
                                 );
+                                return;
                               }
-                              else {
-                                // Save user data
-                                await saveUserData(username, "$username@example.com");
 
-                                // Navigate to ProfilePage
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProfilePage(
-                                      user: UserModel(
-                                        username: username,
-                                        email: "$username@example.com",
-                                        profileImageBytes: null,
-                                        location: null,
-                                      ),
+                              // Query Firestore for user by username or email
+                              final query = await FirebaseFirestore.instance
+                                  .collection('User')
+                                  .where('UserName', isEqualTo: input)
+                                  .get();
+
+                              final emailQuery = await FirebaseFirestore.instance
+                                  .collection('User')
+                                  .where('Email', isEqualTo: input)
+                                  .get();
+
+                              // Combine results
+                              final docs = [...query.docs, ...emailQuery.docs];
+
+                              if (docs.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('User not found.')),
+                                );
+                                return;
+                              }
+
+                              // Check password
+                              final matchingDocs = docs.where((doc) => doc['Password'] == password).toList();
+
+                              if (matchingDocs.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Incorrect password.')),
+                                );
+                                return;
+                              }
+
+                              final userDoc = matchingDocs.first;
+
+                              // Login successful
+                              final userData = userDoc.data();
+                              await saveUserData(userData['UserName'], userData['Email']);
+
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProfilePage(
+                                    user: UserModel(
+                                      username: userData['UserName'],
+                                      email: userData['Email'],
+                                      profileImageBytes: null,
+                                      location: null,
                                     ),
                                   ),
-                                );
-                              }
+                                ),
+                              );
                             },
                             child: const Text(
                               'Login',

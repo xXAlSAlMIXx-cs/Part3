@@ -8,6 +8,7 @@ import 'package:part2_project/pages/profile_page.dart';
 import 'package:part2_project/pages/about_us.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
+import 'package:part2_project/pages/TestPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -79,6 +80,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           },
         ),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.science),
+            tooltip: 'Test Page',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const TestPage()),
+              );
+            },
+          ),
           if (_currentUser == null)
             Row(
               children: <Widget>[
