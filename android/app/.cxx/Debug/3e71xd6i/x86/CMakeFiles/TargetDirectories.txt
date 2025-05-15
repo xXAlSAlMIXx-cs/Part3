@@ -1,0 +1,2 @@
+C:/Users/omany/part2_project/android/app/.cxx/Debug/3e71xd6i/x86/CMakeFiles/edit_cache.dir
+C:/Users/omany/part2_project/android/app/.cxx/Debug/3e71xd6i/x86/CMakeFiles/rebuild_cache.dir

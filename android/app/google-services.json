@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1004278119575",
+    "project_id": "smart-travel-df87a",
+    "storage_bucket": "smart-travel-df87a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004278119575:android:79e16938590932b6797dd2",
+        "android_client_info": {
+          "package_name": "com.example.part2_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvGXqOEBZz6YA85DtzYqT4HQMCk5g-WV0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
